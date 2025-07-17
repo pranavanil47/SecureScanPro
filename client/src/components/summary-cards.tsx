@@ -45,7 +45,7 @@ export default function SummaryCards({ summary }: SummaryCardsProps) {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-neutral">{card.label}</p>
+                <p className="text-sm font-medium text-neutral dark:text-gray-400">{card.label}</p>
                 <p className={`text-2xl font-bold ${card.color}`}>{card.value}</p>
               </div>
               <div className={`w-12 h-12 ${card.bgColor} rounded-lg flex items-center justify-center`}>

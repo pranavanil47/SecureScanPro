@@ -102,8 +102,10 @@ export class MemStorage implements IStorage {
       cvssScore: insertVuln.cvssScore || null,
       filePath: insertVuln.filePath || null,
       lineNumber: insertVuln.lineNumber || null,
+      endLineNumber: insertVuln.endLineNumber || null,
       cwe: insertVuln.cwe || null,
       fixAvailable: insertVuln.fixAvailable || null,
+      codeSnippet: insertVuln.codeSnippet || null,
     };
     this.vulnerabilities.set(id, vulnerability);
     return vulnerability;

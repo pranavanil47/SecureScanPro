@@ -24,8 +24,10 @@ export const vulnerabilities = pgTable("vulnerabilities", {
   cvssScore: text("cvss_score"),
   filePath: text("file_path"),
   lineNumber: integer("line_number"),
+  endLineNumber: integer("end_line_number"),
   cwe: text("cwe"),
   fixAvailable: boolean("fix_available").default(false),
+  codeSnippet: text("code_snippet"),
 });
 
 export const sbomComponents = pgTable("sbom_components", {

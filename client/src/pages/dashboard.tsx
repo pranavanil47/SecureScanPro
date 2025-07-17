@@ -38,23 +38,23 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Shield className="text-primary text-2xl mr-2" />
-              <span className="text-xl font-bold text-gray-900">SecureScan</span>
+              <span className="text-xl font-bold text-gray-900 dark:text-white">SecureScan</span>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-gray-900 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+              <a href="#" className="text-gray-900 dark:text-white hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
                 Dashboard
               </a>
-              <a href="#" className="text-neutral hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+              <a href="#" className="text-neutral dark:text-gray-300 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
                 History
               </a>
-              <a href="#" className="text-neutral hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+              <a href="#" className="text-neutral dark:text-gray-300 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
                 Settings
               </a>
             </nav>

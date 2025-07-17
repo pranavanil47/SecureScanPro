@@ -1,0 +1,28 @@
+/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/opentelemetry/instrumentation/dependencies.py:4: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import (
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 1 file tracked by git with 1062 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  js              156       1          Community    1062                                                                
+  <multilang>      48       1                                                                                           
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 1 (1 blocking)
+ • Rules run: 204
+ • Targets scanned: 1
+ • Parsed lines: ~100.0%
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 204 rules on 1 file: 1 finding.
+{"version":"1.128.1","results":[{"check_id":"javascript.browser.security.eval-detected.eval-detected","path":"test.js","start":{"line":1,"col":1,"offset":0},"end":{"line":1,"col":17,"offset":16},"extra":{"message":"Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.","metadata":{"cwe":["CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code ('Eval Injection')"],"owasp":["A03:2021 - Injection"],"asvs":{"control_id":"5.2.4 Dynamic Code Execution Features","control_url":"https://github.com/OWASP/ASVS/blob/master/4.0/en/0x13-V5-Validation-Sanitization-Encoding.md#v52-sanitization-and-sandboxing","section":"V5 Validation, Sanitization and Encoding","version":"4"},"category":"security","technology":["browser"],"subcategory":["audit"],"likelihood":"LOW","impact":"MEDIUM","confidence":"LOW","references":["https://owasp.org/Top10/A03_2021-Injection"],"license":"Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license","vulnerability_class":["Code Injection"],"source":"https://semgrep.dev/r/javascript.browser.security.eval-detected.eval-detected","shortlink":"https://sg.run/7ope"},"severity":"WARNING","fingerprint":"requires login","lines":"requires login","validation_state":"NO_VALIDATOR","engine_kind":"OSS"}}],"errors":[],"paths":{"scanned":["test.js"]},"time":{"rules":[],"rules_parse_time":2.540982961654663,"profiling_times":{"config_time":6.637375116348267,"core_time":3.5465965270996094,"ignores_time":0.002951383590698242,"total_time":10.188192129135132},"parsing_time":{"total_time":0.008712053298950195,"per_file_time":{"mean":0.008712053298950195,"std_dev":0.0},"very_slow_files":[]},"targets":[],"total_bytes":0,"max_memory_bytes":1086980096},"skipped_rules":[]}

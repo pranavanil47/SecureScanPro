@@ -90,11 +90,11 @@ export default function UploadSection({ onScanStarted }: UploadSectionProps) {
   return (
     <div className="mb-8">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
           Repository Security Analysis
         </h1>
-        <p className="text-lg text-neutral max-w-2xl mx-auto">
-          Upload your repository as a ZIP file to perform comprehensive security scanning with Trivy integration
+        <p className="text-lg text-neutral dark:text-gray-300 max-w-2xl mx-auto">
+          Upload your repository as a ZIP file to perform comprehensive security scanning with Trivy & Semgrep integration
         </p>
       </div>
 
@@ -103,8 +103,8 @@ export default function UploadSection({ onScanStarted }: UploadSectionProps) {
           <div
             className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
               dragActive
-                ? "border-primary bg-blue-50"
-                : "border-gray-300 hover:border-primary"
+                ? "border-primary bg-blue-50 dark:bg-blue-950"
+                : "border-gray-300 dark:border-gray-600 hover:border-primary"
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
@@ -112,11 +112,11 @@ export default function UploadSection({ onScanStarted }: UploadSectionProps) {
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
           >
-            <CloudUpload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <CloudUpload className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
               Upload Repository
             </h3>
-            <p className="text-sm text-neutral mb-4">
+            <p className="text-sm text-neutral dark:text-gray-300 mb-4">
               Select a ZIP file containing your repository
             </p>
             <input
@@ -133,7 +133,7 @@ export default function UploadSection({ onScanStarted }: UploadSectionProps) {
               {uploadMutation.isPending ? "Uploading..." : "Choose File"}
             </Button>
           </div>
-          <div className="mt-4 text-xs text-neutral text-center">
+          <div className="mt-4 text-xs text-neutral dark:text-gray-400 text-center">
             <p>Supported formats: ZIP files up to 100MB</p>
             <p>Common repositories: Git, SVN, Mercurial</p>
           </div>

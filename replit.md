@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a full-stack security scanner application built with React frontend and Express backend. The application allows users to upload ZIP files containing code repositories and performs comprehensive security analysis using Trivy scanner. It provides vulnerability scanning (SCA/SAST) and generates Software Bill of Materials (SBOM) reports.
+This is a full-stack security scanner application built with React frontend and Express backend. The application allows users to upload ZIP files containing code repositories and performs comprehensive security analysis using Trivy scanner for SCA/SBOM generation and Semgrep for SAST analysis. It provides vulnerability scanning and generates Software Bill of Materials (SBOM) reports with dark theme support.
 
 ## User Preferences
 
@@ -40,9 +40,10 @@ The application uses three main tables:
 - **Operations**: CRUD operations for scans, vulnerabilities, and SBOM components
 
 #### Security Scanner Service
-- **TrivyScanner**: Handles repository scanning workflow
+- **TrivyScanner**: Handles repository scanning workflow with dual-tool integration
 - **File Processing**: ZIP extraction and cleanup
 - **Async Processing**: Background scanning with progress updates
+- **Dual Analysis**: Trivy for SCA/SBOM, Semgrep for SAST
 
 #### Frontend Components
 - **UploadSection**: Drag-and-drop file upload with validation
@@ -76,7 +77,8 @@ The application uses three main tables:
 - **lucide-react**: Icon library
 
 ### Security Tools
-- **Trivy**: External security scanner for vulnerability detection
+- **Trivy**: External security scanner for SCA vulnerability detection and SBOM generation
+- **Semgrep**: SAST analysis tool for static code security analysis
 - **ZIP utilities**: For repository extraction
 
 ## Deployment Strategy
@@ -102,11 +104,19 @@ The application uses three main tables:
 
 ### Key Features
 - Real-time scan progress tracking
-- Comprehensive vulnerability reporting
+- Comprehensive vulnerability reporting (SCA + SAST)
 - SBOM generation and analysis
 - Export functionality for compliance
 - Responsive design for mobile/desktop
-- Dark/light theme support
+- Dark theme support (default)
+- Semgrep-powered SAST analysis
 - Error handling and user feedback
+
+## Recent Changes (January 2025)
+- ✓ Replaced Trivy secret scanning with Semgrep for SAST analysis
+- ✓ Implemented comprehensive dark theme support
+- ✓ Fixed file upload issues with FormData handling
+- ✓ Enhanced scanner service with dual-tool architecture
+- ✓ Updated UI to reflect Semgrep integration
 
 The application follows a clean separation of concerns with shared TypeScript schemas between frontend and backend, ensuring type safety across the full stack. The modular component architecture allows for easy extension and maintenance.

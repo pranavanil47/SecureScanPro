@@ -47,11 +47,11 @@ export class TrivyScanner {
       
       await storage.updateScanStatus(scanId, "scanning", 25);
 
-      // Run Trivy scans
+      // Run security scans
       await Promise.all([
         this.runSbomScan(scanId, extractPath),
         this.runVulnerabilityScan(scanId, extractPath),
-        this.runSecretScan(scanId, extractPath)
+        this.runSemgrepScan(scanId, extractPath)
       ]);
 
       await storage.updateScanStatus(scanId, "scanning", 90);
@@ -129,34 +129,43 @@ export class TrivyScanner {
     });
   }
 
-  private async runSecretScan(scanId: number, repoPath: string): Promise<void> {
+  private async runSemgrepScan(scanId: number, repoPath: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      const trivy = spawn("trivy", [
-        "fs",
-        "--format", "json",
-        "--security-checks", "secret",
+      const semgrep = spawn("semgrep", [
+        "--config=auto",
+        "--json",
+        "--no-git-ignore",
+        "--skip-unknown-extensions",
         repoPath
       ]);
 
       let output = "";
-      trivy.stdout.on("data", (data) => {
+      let errorOutput = "";
+      
+      semgrep.stdout.on("data", (data) => {
         output += data.toString();
       });
 
-      trivy.on("close", async (code) => {
-        if (code === 0) {
+      semgrep.stderr.on("data", (data) => {
+        errorOutput += data.toString();
+      });
+
+      semgrep.on("close", async (code) => {
+        // Semgrep returns non-zero exit codes when findings are found, so we accept codes 0-2
+        if (code === 0 || code === 1 || code === 2) {
           try {
-            await this.processSecretResults(scanId, output);
+            await this.processSemgrepResults(scanId, output);
             resolve();
           } catch (error) {
             reject(error);
           }
         } else {
-          reject(new Error(`Trivy secret scan failed with code ${code}`));
+          console.error("Semgrep stderr:", errorOutput);
+          reject(new Error(`Semgrep scan failed with code ${code}: ${errorOutput}`));
         }
       });
 
-      trivy.on("error", reject);
+      semgrep.on("error", reject);
     });
   }
 
@@ -226,39 +235,94 @@ export class TrivyScanner {
     }
   }
 
-  private async processSecretResults(scanId: number, output: string): Promise<void> {
+  private async processSemgrepResults(scanId: number, output: string): Promise<void> {
     if (!output.trim()) return;
 
     try {
       const results = JSON.parse(output);
       
-      if (results.Results) {
-        for (const result of results.Results) {
-          if (result.Secrets) {
-            for (const secret of result.Secrets) {
-              const vulnerability: InsertVulnerability = {
-                scanId,
-                type: "sast",
-                severity: "high", // Secrets are generally high severity
-                title: `${secret.RuleID}: ${secret.Title}`,
-                description: `Secret detected: ${secret.Match}`,
-                component: null,
-                version: null,
-                cve: null,
-                cvssScore: null,
-                filePath: result.Target,
-                lineNumber: secret.StartLine,
-                cwe: "CWE-798", // Hardcoded credentials
-                fixAvailable: false,
-              };
+      if (results.results) {
+        for (const finding of results.results) {
+          // Extract code snippet by reading the actual file
+          const codeSnippet = await this.extractCodeSnippet(
+            finding.path, 
+            finding.start?.line, 
+            finding.end?.line
+          );
+          
+          const vulnerability: InsertVulnerability = {
+            scanId,
+            type: "sast",
+            severity: this.mapSemgrepSeverity(finding.extra?.severity),
+            title: finding.extra?.message || finding.check_id || "SAST Finding",
+            description: finding.extra?.shortlink ? 
+              `${finding.extra.message}\n\nMore info: ${finding.extra.shortlink}` : 
+              finding.extra?.message || "Static analysis security finding",
+            component: null,
+            version: null,
+            cve: finding.extra?.references?.find((ref: string) => ref.includes('CVE')) || null,
+            cvssScore: null,
+            filePath: finding.path,
+            lineNumber: finding.start?.line || null,
+            endLineNumber: finding.end?.line || null,
+            cwe: finding.extra?.cwe?.join(", ") || null,
+            fixAvailable: false,
+            codeSnippet: codeSnippet,
+          };
 
-              await storage.createVulnerability(vulnerability);
-            }
-          }
+          await storage.createVulnerability(vulnerability);
         }
       }
     } catch (error) {
-      console.error("Failed to process secret results:", error);
+      console.error("Failed to process Semgrep results:", error);
+    }
+  }
+
+  private async extractCodeSnippet(filePath: string, startLine?: number, endLine?: number): Promise<string | null> {
+    if (!startLine || !this.extractPath) return null;
+
+    try {
+      // Convert absolute path to relative from scan directory
+      const relativePath = filePath.startsWith('/') ? 
+        path.basename(filePath) : filePath;
+      
+      const fullPath = path.join(this.extractPath, relativePath);
+      console.log(`Extracting code from: ${fullPath} (lines ${startLine}-${endLine || startLine})`);
+      
+      const content = await fs.readFile(fullPath, 'utf-8');
+      const lines = content.split('\n');
+      
+      const start = Math.max(0, (startLine - 1) - 2); // Include 2 lines before
+      const end = Math.min(lines.length, (endLine || startLine) + 2); // Include 2 lines after
+      
+      const snippet = lines.slice(start, end)
+        .map((line, index) => {
+          const lineNum = start + index + 1;
+          const isVulnerable = lineNum >= startLine && lineNum <= (endLine || startLine);
+          const prefix = isVulnerable ? '▶ ' : '  ';
+          return `${prefix}${lineNum.toString().padStart(3)}: ${line}`;
+        })
+        .join('\n');
+
+      return snippet;
+    } catch (error) {
+      console.error("Failed to extract code snippet:", error);
+      return null;
+    }
+  }
+
+  private mapSemgrepSeverity(severity: string): string {
+    if (!severity) return "medium";
+    
+    switch (severity.toLowerCase()) {
+      case "error":
+        return "high";
+      case "warning":
+        return "medium";
+      case "info":
+        return "low";
+      default:
+        return "medium";
     }
   }
 

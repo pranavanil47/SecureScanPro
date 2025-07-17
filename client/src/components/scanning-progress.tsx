@@ -26,17 +26,17 @@ export default function ScanningProgress({ status, progress }: ScanningProgressP
           <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
             <Search className="w-6 h-6 text-white" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
             Scanning Repository
           </h2>
-          <p className="text-neutral">
+          <p className="text-neutral dark:text-gray-300">
             Analyzing your code for security vulnerabilities...
           </p>
         </div>
 
         <div className="space-y-4 mb-6">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-900">
+            <span className="text-sm font-medium text-gray-900 dark:text-white">
               Extracting ZIP file
             </span>
             {getStepStatus("uploading") === "completed" ? (
@@ -49,8 +49,8 @@ export default function ScanningProgress({ status, progress }: ScanningProgressP
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-900">
-              Running Trivy scan
+            <span className="text-sm font-medium text-gray-900 dark:text-white">
+              Running vulnerability scan
             </span>
             {getStepStatus("scanning") === "completed" ? (
               <Check className="w-4 h-4 text-green-500" />
@@ -62,15 +62,15 @@ export default function ScanningProgress({ status, progress }: ScanningProgressP
           </div>
 
           <div className="flex items-center justify-between">
-            <span className={`text-sm font-medium ${status === "scanning" ? "text-gray-900" : "text-neutral"}`}>
+            <span className={`text-sm font-medium ${status === "scanning" ? "text-gray-900 dark:text-white" : "text-neutral dark:text-gray-400"}`}>
               Generating SBOM
             </span>
             <Clock className="w-4 h-4 text-gray-300" />
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-neutral">
-              Analyzing dependencies
+            <span className="text-sm font-medium text-neutral dark:text-gray-400">
+              Running Semgrep SAST
             </span>
             <Clock className="w-4 h-4 text-gray-300" />
           </div>
@@ -78,8 +78,8 @@ export default function ScanningProgress({ status, progress }: ScanningProgressP
 
         <div>
           <div className="flex items-center justify-between text-sm mb-2">
-            <span className="font-medium text-gray-900">Overall Progress</span>
-            <span className="text-neutral">{progress}%</span>
+            <span className="font-medium text-gray-900 dark:text-white">Overall Progress</span>
+            <span className="text-neutral dark:text-gray-300">{progress}%</span>
           </div>
           <Progress value={progress} className="w-full" />
         </div>
